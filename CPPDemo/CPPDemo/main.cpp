@@ -47,10 +47,6 @@ int main(int argc, const char * argv[]) {
     std::cout<<"after sort:";
     print_array(a,9);
     
-    
-    
-    
-    
     cout << "type: \t\t" << "************size**************"<< endl;
     cout << "bool: \t\t" << "所占字节数：" << sizeof(bool);
     cout << "\t最大值：" << (numeric_limits<bool>::max)();
