@@ -11,24 +11,5 @@
 
 #include <stdio.h>
 
-class CPPTest1 {
-public:
-    // 定义公共方法
-   // void testPaiXu(); //排序方法
-    
-    void setDate(char);//设置日期
-
-private:
-    // 似有方法
-    int year;
-    int month;
-    int day;
-    bool pass;
-    bool checkFormat(char);//验证日期输入格式
-    void validate();//验证日期数值有效性
-    bool leapYear(int);//闰年判断  
-    
-};
-
 
 #endif /* CPPTest1_hpp */
