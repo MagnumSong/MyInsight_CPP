@@ -8,14 +8,22 @@
 
 #include <iostream>
 
-#include "Stock00.cpp"
-
-using namespace std;
-
 
 int main(int argc, const char * argv[]) {
+    // using编译指令
+    using namespace std;
+    
+    
+    cout << "Hello World";
+    cout << "Hello World/n";
     
     return 0;
 }
 
-
+/*
+ CPPdemo
+ 打算用C++写个小玩意儿
+ 如：爬虫
+ OpenGL
+ 
+ */
