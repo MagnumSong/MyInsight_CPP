@@ -7,23 +7,23 @@
 //
 
 #include <iostream>
-#include "CPPTest1.cpp"
-
-using namespace std;
-
 
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
+    // using编译指令
+    using namespace std;
     
-    // 实例化对象
-    //CPPTest1 cpptest1;
-    //cpptest1.testPaiXu();
     
+    cout << "Hello World";
+    cout << "Hello World/n";
     
     return 0;
 }
 
-
-
-
+/*
+ CPPdemo
+ 打算用C++写个小玩意儿
+ 如：爬虫
+ OpenGL
+ 
+ */
