@@ -8,6 +8,8 @@
 
 #include <iostream>
 #include <cmath>
+#include <climits>
+
 // using编译指令
 using namespace std;
 
@@ -32,11 +34,27 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 
-
 // 定义函数
 void springOut(int n)
 {
     cout << n << endl;
+    
+    
+    
+    cout.setf(ios_base::fixed, ios_base::floatfield); // fixed-point
+    
+    int num1 = 42;
+    int num2 = 0X42;
+    int num3 = 042;
+    
+    float num44 = 10e-2;
+    
+    cout << num1 << endl;
+    cout << num2 << endl;
+    cout << num3 << endl;
+    
+    cout << num44 << endl;
+    
 }
 
 
