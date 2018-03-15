@@ -31,7 +31,6 @@ int main(int argc, const char * argv[]) {
 #pragma mark 第三章代码 处理数据
 void diSanZhangCode()
 {
-    
     cout << "Hello World" << endl;
     
     int carrots;
@@ -74,8 +73,16 @@ void diSiZhangCode()
     cout << yamcosts[1] << " cents per yam" << endl;
     
     // 2.字符串
+    const int ArSize = 20;
+    char name[ArSize];
+    char dessert[ArSize];
     
-    
+    cout << "Enter your name:" << endl;
+    cin.getline(name, ArSize);
+    cout << "Enter your faviorite dessert:" << endl;
+    cin.getline(dessert, ArSize);
+    cout << "I have some delicious " << dessert;
+    cout << " for you, " << name << endl;
     
     // 3.string类简介
     
