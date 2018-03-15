@@ -13,7 +13,10 @@
 // using编译指令
 using namespace std;
 
-void springOut(int n);
+// 定义一些方法
+void springOut(int n); //
+void diSanZhangCode(); // 第三章代码
+void diSiZhangCode(); // 第四章代码
 
 int main(int argc, const char * argv[]) {
     
@@ -34,13 +37,10 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 
-// 定义函数
-void springOut(int n)
+#pragma mark 第三章代码 处理数据
+void diSanZhangCode()
 {
-    cout << n << endl;
-    
-    
-    
+    // 可以输出完整的浮点型数据
     cout.setf(ios_base::fixed, ios_base::floatfield); // fixed-point
     
     int num1 = 42;
@@ -54,8 +54,14 @@ void springOut(int n)
     cout << num3 << endl;
     
     cout << num44 << endl;
+}
+
+#pragma mark 第四章代码 复合类型
+void diSiZhangCode()
+{
     
 }
+
 
 
 
