@@ -20,10 +20,18 @@ void diSiZhangCode(); // 第四章代码
 
 int main(int argc, const char * argv[]) {
     
+    // 第三章代码
+    //diSanZhangCode();
     
+    diSiZhangCode();
     
+    return 0;
+}
+
+#pragma mark 第三章代码 处理数据
+void diSanZhangCode()
+{
     
-    cout << "Hello World" << endl;
     cout << "Hello World" << endl;
     
     int carrots;
@@ -32,14 +40,6 @@ int main(int argc, const char * argv[]) {
     
     cout << pow(5.0, 8.0) << endl;
     
-    springOut(9);
-    
-    return 0;
-}
-
-#pragma mark 第三章代码 处理数据
-void diSanZhangCode()
-{
     // 可以输出完整的浮点型数据
     cout.setf(ios_base::fixed, ios_base::floatfield); // fixed-point
     
@@ -52,18 +52,36 @@ void diSanZhangCode()
     cout << num1 << endl;
     cout << num2 << endl;
     cout << num3 << endl;
-    
     cout << num44 << endl;
+    cout << 9.11e-31 << endl;
 }
 
 #pragma mark 第四章代码 复合类型
 void diSiZhangCode()
 {
+    using namespace std;
+    
+    // 1.数组
+    int yams[3];
+    yams[0] = 7;
+    yams[1] = 8;
+    yams[2] = 6;
+    
+    int yamcosts[3] = {20, 30, 5};
+    cout << "Total yams = ";
+    cout << yams[0] + yams[1] + yams[2] << endl;
+    cout << "The package with " << yams[1] << " yams costs";
+    cout << yamcosts[1] << " cents per yam" << endl;
+    
+    // 2.字符串
+    
+    
+    
+    // 3.string类简介
+    
+    // 4.结构简介
     
 }
-
-
-
 
 /*
  CPPdemo
