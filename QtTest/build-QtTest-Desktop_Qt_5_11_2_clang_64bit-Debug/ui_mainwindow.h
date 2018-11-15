@@ -11,7 +11,6 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
@@ -26,11 +25,9 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QLabel *label;
-    QLineEdit *lineEdit;
-    QLineEdit *lineEdit_2;
     QPushButton *pushButton;
-    QLabel *label_2;
+    QLineEdit *lineEdit;
+    QPushButton *scanport;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -39,28 +36,22 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(529, 355);
+        MainWindow->resize(746, 471);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        label = new QLabel(centralWidget);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(70, 50, 59, 16));
-        lineEdit = new QLineEdit(centralWidget);
-        lineEdit->setObjectName(QStringLiteral("lineEdit"));
-        lineEdit->setGeometry(QRect(150, 50, 113, 21));
-        lineEdit_2 = new QLineEdit(centralWidget);
-        lineEdit_2->setObjectName(QStringLiteral("lineEdit_2"));
-        lineEdit_2->setGeometry(QRect(150, 100, 113, 21));
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setGeometry(QRect(140, 160, 114, 32));
-        label_2 = new QLabel(centralWidget);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(70, 100, 59, 16));
+        pushButton->setGeometry(QRect(400, 100, 114, 32));
+        lineEdit = new QLineEdit(centralWidget);
+        lineEdit->setObjectName(QStringLiteral("lineEdit"));
+        lineEdit->setGeometry(QRect(100, 40, 113, 21));
+        scanport = new QPushButton(centralWidget);
+        scanport->setObjectName(QStringLiteral("scanport"));
+        scanport->setGeometry(QRect(400, 40, 114, 32));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 529, 22));
+        menuBar->setGeometry(QRect(0, 0, 746, 22));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -77,9 +68,8 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
-        label->setText(QApplication::translate("MainWindow", "\345\247\223\345\220\215", nullptr));
-        pushButton->setText(QApplication::translate("MainWindow", "\347\273\237\350\256\241", nullptr));
-        label_2->setText(QApplication::translate("MainWindow", "\345\271\264\347\272\252", nullptr));
+        pushButton->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200", nullptr));
+        scanport->setText(QApplication::translate("MainWindow", "\346\211\253\346\217\217", nullptr));
     } // retranslateUi
 
 };

@@ -216,6 +216,7 @@ DIST          = /Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/spec_pre
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/qt_config.prf \
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/spec_post.prf \
+		../QtTest/.qmake.stash \
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/mac/sdk.prf \
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/toolchain.prf \
@@ -426,6 +427,7 @@ Makefile: ../QtTest/QtTest.pro /Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/ma
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/qt_config.prf \
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/mac/sdk.prf \
 		/Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/toolchain.prf \
@@ -619,6 +621,7 @@ Makefile: ../QtTest/QtTest.pro /Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/ma
 /Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/qt_config.prf:
 /Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/macx-clang/qmake.conf:
 /Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/exclusive_builds.prf:
 /Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/mac/sdk.prf:
 /Users/songmenglong/Qt/5.11.2/clang_64/mkspecs/features/toolchain.prf:
@@ -692,6 +695,7 @@ clean: compiler_clean
 
 distclean: clean 
 	-$(DEL_FILE) -r QtTest.app
+	-$(DEL_FILE) .qmake.stash
 	-$(DEL_FILE) Makefile
 
 
