@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport network
+QT       += core gui serialport
 # serialport 添加串口模块
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets

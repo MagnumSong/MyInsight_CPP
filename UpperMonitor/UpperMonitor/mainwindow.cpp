@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+//#include <QtCore>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -39,19 +40,10 @@ void MainWindow::on_openSerialBtn_clicked()
 // 打开文件 读取文件大小
 void MainWindow::on_openFileBtn_clicked()
 {
-    qDebug("打开文件，读取文件大小");
-
-    //connect(ui->actionopenfilephoto,SIGNAL(triggered()),this,SLOT(OpenFilePhoto()));
-
-    /*
     QString filter = "所有文件 (*.*)";
-    ui->txtSendFile->setText(myHelper::GetFileName(filter));
+    // 打开文件
+    QString fileName = QFileDialog::getOpenFileName(0, "选择文件", QCoreApplication::applicationDirPath(), filter);
 
-    ui->pbarSendData->setRange(0, 100);
-    ui->pbarSendData->setValue(0);
-    ui->pbarReceiveData->setRange(0, 100);
-    ui->pbarReceiveData->setValue(0);
-    */
 
 }
 

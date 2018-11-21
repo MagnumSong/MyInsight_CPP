@@ -7,6 +7,12 @@
 // 打印
 #include <QDebug>
 
+//#include <QtCore>
+//#include <QtGui>
+//#include <QtNetwork>
+
+#include <QtWidgets>
+
 namespace Ui {
 class MainWindow;
 }
