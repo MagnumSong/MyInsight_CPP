@@ -4,14 +4,13 @@
 #include <QMainWindow>
 // 串口头文件
 #include <QtSerialPort/QSerialPort>
+#include <QtSerialPort/QSerialPortInfo>
 // 打印
 #include <QDebug>
 
-//#include <QtCore>
-//#include <QtGui>
-//#include <QtNetwork>
-
 #include <QtWidgets>
+// 获取文件信息
+#include <QDialog>
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +30,8 @@ private slots:
     void on_openSerialBtn_clicked();
 
     void on_openFileBtn_clicked();
+
+    void readData();
 
 private:
     Ui::MainWindow *ui;
