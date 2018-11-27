@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     // 输出当前系统可以使用的串口个数
-    qDebug() << "Total numbers of ports: " << serialPortInfos.count();
+    qDebug() << "Total numbers of ports 可用的串口数量: " << serialPortInfos.count();
     // 设置端口选择器文字
     ui->comboBox_serialPort->addItem(tr("端口"));
     // 将所有可以使用的串口设备添加到ComboBox中
@@ -70,6 +70,61 @@ MainWindow::~MainWindow()
 void MainWindow::on_openSerialBtn_clicked()
 {
     qDebug("打开串口");
+
+    if (ui->openSerialBtn->text() == tr("打开串口")) {
+
+        //设置串口名字
+        serial->setPortName(ui->comboBox_serialPort->currentText());
+        //设置波特率
+        serial->setBaudRate(ui->comboBox_baudRate->currentText().toInt());
+        //设置数据位
+        serial->setDataBits(QSerialPort::Data8);
+        //设置奇偶校验位
+        serial->setParity(QSerialPort::NoParity);
+        //设置停止位
+        serial->setStopBits(QSerialPort::OneStop);
+        //设置流控
+        serial->setFlowControl(QSerialPort::NoFlowControl);
+        //
+        if(serial->open(QIODevice::ReadWrite)) {
+            //关闭可选按钮
+    //        ui->comboBox_baudRate->setEnabled(false);
+    //        ui->comboBox_dataBits->setEnabled(false);
+    //        ui->comboBox_flowBit->setEnabled(false);
+    //        ui->comboBox_parity->setEnabled(false);
+    //        ui->comboBox_serialPort->setEnabled(false);
+    //        ui->comboBox_stopBit->setEnabled(false);
+            //发送按钮打开
+    //        ui->btn_send->setEnabled(true);
+            //打开串口变成关闭串口
+    //        ui->btn_openConsole->setText(tr("关闭串口"));
+            //
+            //信号与槽函数关联
+            connect(serial, &QSerialPort::readyRead, this, &MainWindow::readData);
+        }
+
+    } else {
+        //关闭串口
+        //serial->clear();
+        serial->close();
+        //serial->deleteLater();
+
+        //恢复设置功能
+//        ui->comboBox_baudRate->setEnabled(true);
+//        ui->comboBox_dataBits->setEnabled(true);
+//        ui->comboBox_flowBit->setEnabled(true);
+//        ui->comboBox_parity->setEnabled(true);
+//        ui->comboBox_serialPort->setEnabled(true);
+//        ui->comboBox_stopBit->setEnabled(true);
+
+//        ui->btn_openConsole->setText(tr("打开串口"));
+//        ui->btn_send->setEnabled(false);
+
+    }
+
+
+
+
 }
 
 // 打开文件 读取文件大小
@@ -92,15 +147,45 @@ void MainWindow::on_openFileBtn_clicked()
     ui->labelFileSize->setText(fileSize);
 }
 
-// Read Data
-void MainWindow::readData() {
-    QByteArray temp = serial->readAll();
+//void MainWindow::writeData(const QByteArray &data)
+//{
+//    serial->write(data);
+//}
 
+
+// Read Data
+void MainWindow::readData()
+{
+    // https://blog.csdn.net/zn2857/article/details/79001122
+
+    QByteArray temp = serial->readAll();
     QString buf;
 
     if (!temp.isEmpty()) {
         // 读取信息不为空
+        //ui->textBrowser->setTextColor(Qt::black);
+
+        for(int i = 0; i < temp.count(); i++) {
+            QString s;
+            s.sprintf("%02X ", (unsigned char)temp.at(i));
+            buf += s;
+        }
+
+//        ui->textBrowser->append(buf);
+
+//        QTextCursor cursor = ui->textBrowser->textCursor();
+//        cursor.movePosition(QTextCursor::End);
+//        ui->textBrowser->setTextCursor(cursor);
+
+//        ui->receivebyteLcdNumber->display(ui->receivebyteLcdNumber->value() + temp.size());
+
+
+       //ui->statusBar->showMessage(tr("成功读取%1字节数据").arg(temp.size()));
+
+
+
+
+
+
     }
-
 }
-
