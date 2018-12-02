@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>190</y>
+      <y>460</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="openSerialBtn">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>240</y>
+      <x>10</x>
+      <y>420</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -43,8 +43,8 @@
    <widget class="QComboBox" name="comboBox_baudRate">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>80</y>
+      <x>80</x>
+      <y>50</y>
       <width>69</width>
       <height>22</height>
      </rect>
@@ -53,8 +53,8 @@
    <widget class="QPushButton" name="openFileBtn">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>240</y>
+      <x>200</x>
+      <y>460</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -63,32 +63,22 @@
      <string>打开文件</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QTextEdit" name="textBrowser">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>10</y>
-      <width>104</width>
-      <height>71</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="textEdit_2">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>110</y>
-      <width>104</width>
-      <height>71</height>
+      <x>190</x>
+      <y>0</y>
+      <width>561</width>
+      <height>451</height>
      </rect>
     </property>
    </widget>
    <widget class="QLineEdit" name="txtSendFile">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>240</y>
-      <width>201</width>
+      <x>370</x>
+      <y>470</y>
+      <width>181</width>
       <height>20</height>
      </rect>
     </property>
@@ -96,8 +86,8 @@
    <widget class="QComboBox" name="comboBox_serialPort">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>40</y>
+      <x>80</x>
+      <y>20</y>
       <width>69</width>
       <height>22</height>
      </rect>
@@ -106,14 +96,181 @@
    <widget class="QLabel" name="labelFileSize">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>210</y>
+      <x>300</x>
+      <y>470</y>
       <width>54</width>
       <height>12</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>发送大小</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="receivebyteLcdNumber">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>470</y>
+      <width>54</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>接收大小</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>54</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>端口号:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>60</y>
+      <width>54</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>波特率:</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox_dataBits">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>80</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox_parity">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>110</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox_stopBit">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>140</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox_flowBit">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>170</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>80</y>
+      <width>54</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>数据位:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>110</y>
+      <width>54</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>校验位:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>140</y>
+      <width>54</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>停止位:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>170</y>
+      <width>54</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>流控制:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>460</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>清空接收内容</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="sendCmdText">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>220</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="sendCmdBtn">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>220</y>
+      <width>51</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>发送</string>
     </property>
    </widget>
   </widget>

@@ -26,6 +26,10 @@ public:
 
 
 private slots:
+    // 打开串口
+    void openSerialPort();
+
+
     // 信号槽
     void on_openSerialBtn_clicked();
 
@@ -36,6 +40,8 @@ private slots:
     void timerTransDate();
 
     void on_sendButton_clicked();
+    //发送命令button方法
+    void sendCmdButtonClicked();
 
 private:
     Ui::MainWindow *ui;

@@ -16,13 +16,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QString manufacturer;
     QString serialNumber;
 
-    // 获取可以用的串口
+    //获取可以用的串口
     QList<QSerialPortInfo> serialPortInfos = QSerialPortInfo::availablePorts();
 
-    // 输出当前系统可以使用的串口个数
+    //输出当前系统可以使用的串口个数
     qDebug() << "Total numbers of ports: " << serialPortInfos.count();
 
-    // 将所有可以使用的串口设备添加到ComboBox中
+    //将所有可以使用的串口设备添加到ComboBox中
     for (const QSerialPortInfo &serialPortInfo : serialPortInfos)
     {
         QStringList list;
@@ -43,38 +43,38 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->comboBox_serialPort->addItem(tr("custom"));
 
-    // 设置波特率
+    //设置波特率
     ui->comboBox_baudRate->addItem(QStringLiteral("9600"), QSerialPort::Baud9600);
     ui->comboBox_baudRate->addItem(QStringLiteral("19200"), QSerialPort::Baud19200);
     ui->comboBox_baudRate->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
     ui->comboBox_baudRate->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
     ui->comboBox_baudRate->addItem(tr("Custom"));
 
-    // 设置数据位
+    //设置数据位
     ui->comboBox_dataBits->addItem(QStringLiteral("5"), QSerialPort::Data5);
     ui->comboBox_dataBits->addItem(QStringLiteral("6"), QSerialPort::Data6);
     ui->comboBox_dataBits->addItem(QStringLiteral("7"), QSerialPort::Data7);
     ui->comboBox_dataBits->addItem(QStringLiteral("8"), QSerialPort::Data8);
     ui->comboBox_dataBits->setCurrentIndex(3);
 
-    // 设置奇偶校验位
+    //设置奇偶校验位
     ui->comboBox_parity->addItem(tr("None"), QSerialPort::NoParity);
     ui->comboBox_parity->addItem(tr("Even"), QSerialPort::EvenParity);
     ui->comboBox_parity->addItem(tr("Odd"), QSerialPort::OddParity);
     ui->comboBox_parity->addItem(tr("Mark"), QSerialPort::MarkParity);
     ui->comboBox_parity->addItem(tr("Space"), QSerialPort::SpaceParity);
 
-    // 设置停止位
+    //设置停止位
     ui->comboBox_stopBit->addItem(QStringLiteral("1"), QSerialPort::OneStop);
     ui->comboBox_stopBit->addItem(QStringLiteral("2"), QSerialPort::TwoStop);
 
-    // 添加流控
+    //添加流控
     ui->comboBox_flowBit->addItem(tr("None"), QSerialPort::NoFlowControl);
     ui->comboBox_flowBit->addItem(tr("RTS/CTS"), QSerialPort::HardwareControl);
     ui->comboBox_flowBit->addItem(tr("XON/XOFF"), QSerialPort::SoftwareControl);
 
 
-    // 禁用发送按钮
+    //禁用发送按钮
     ui->btn_send->setEnabled(false);
 }
 
@@ -85,30 +85,23 @@ MainWindow::~MainWindow()
 
 }
 
-// 打开串口按钮槽函数
+//打开串口按钮槽函数
 void MainWindow::on_btn_openConsole_clicked()
 {
     qDebug() << ui->btn_openConsole->text();
 
     if (ui->btn_openConsole->text() == tr("打开串口"))
     {
-
-
         //设置串口名字
         serial->setPortName(ui->comboBox_serialPort->currentText());
-
         //设置波特率
         serial->setBaudRate(ui->comboBox_baudRate->currentText().toInt());
-
         //设置数据位
         serial->setDataBits(QSerialPort::Data8);
-
         //设置奇偶校验位
         serial->setParity(QSerialPort::NoParity);
-
         //设置停止位
         serial->setStopBits(QSerialPort::OneStop);
-
         //设置流控
         serial->setFlowControl(QSerialPort::NoFlowControl);
 
@@ -129,9 +122,7 @@ void MainWindow::on_btn_openConsole_clicked()
             //信号与槽函数关联
             connect(serial, &QSerialPort::readyRead, this, &MainWindow::readData);
         }
-    }
-    else
-    {
+    } else {
         //关闭串口
         //serial->clear();
         serial->close();
