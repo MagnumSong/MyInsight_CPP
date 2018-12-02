@@ -30,7 +30,7 @@
    <widget class="QPushButton" name="openSerialBtn">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>20</x>
       <y>240</y>
       <width>75</width>
       <height>23</height>
@@ -86,7 +86,7 @@
    <widget class="QLineEdit" name="txtSendFile">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>120</x>
       <y>240</y>
       <width>201</width>
       <height>20</height>

@@ -33,10 +33,24 @@ private slots:
 
     void readData();
 
+    void timerTransDate();
+
+    void on_sendButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     // 串口变量
     QSerialPort *serial;
+    // 文件名字
+    QString fileName;
+    // 定时器
+    QTimer *timer;
+    // bin文件大小
+    int binSize;
+    //
+    QByteArray *tempByte;
+    //
+    int ulNum;
 
 };
 

@@ -2,6 +2,9 @@
 #include "ui_mainwindow.h"
 #include <QtCore>
 #include <QApplication>
+//定时器
+#include <QTimer>
+#include <QDir>
 
 // 空白字符串
 static const char blankString[] = QT_TRANSLATE_NOOP("SettingsDialog", "N/A");
@@ -48,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // 设置波特率
     ui->comboBox_baudRate->addItem(tr("波特率"));
-
     ui->comboBox_baudRate->addItem(QStringLiteral("1200"), QSerialPort::Baud1200);
     ui->comboBox_baudRate->addItem(QStringLiteral("2400"), QSerialPort::Baud2400);
     ui->comboBox_baudRate->addItem(QStringLiteral("4800"), QSerialPort::Baud4800);
@@ -57,6 +59,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBox_baudRate->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
     ui->comboBox_baudRate->addItem(QStringLiteral("57600"), QSerialPort::Baud57600);
     ui->comboBox_baudRate->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
+
+    // 发送定时器
+    timer = new QTimer(this);
+    // 设置槽函数
+    connect(timer,SIGNAL(timeout()),this,SLOT(timerTransDate()));
 
 }
 
@@ -119,7 +126,6 @@ void MainWindow::on_openSerialBtn_clicked()
 
 //        ui->btn_openConsole->setText(tr("打开串口"));
 //        ui->btn_send->setEnabled(false);
-
     }
 
 
@@ -132,19 +138,87 @@ void MainWindow::on_openFileBtn_clicked()
 {
     QString filter = "所有文件 (*.*)";
     // 打开文件
-    QString fileName = QFileDialog::getOpenFileName(0, "选择文件", QCoreApplication::applicationDirPath(), filter);
+    //QString fileName = QFileDialog::getOpenFileName(0, "选择文件", QCoreApplication::applicationDirPath(), filter);
+    fileName = QFileDialog::getOpenFileName(this, "Open File", QDir::currentPath());
     // 显示选定的文件
     ui->txtSendFile->setText(fileName);
     // 读取文件大小
-    QFileInfo info(fileName);
-    qDebug() << "选定文件的大小 : " << info.size();
+    QFileInfo *fileInfo = new QFileInfo(fileName);
+    //int fileSize = fileInfo->size(); // qint64
+    // bin文件大小qint64转int类型
+    binSize = QStringLiteral("%1").arg(fileInfo->size()).toInt();
+
+    qDebug() << "选定文件的大小 : " << binSize;
     // 文件大小换算成16进制
+    qDebug() << "选定文件的大小 16进制 : " << QString("%1").arg(binSize,4,16,QLatin1Char('0'));
 
-    // 文件的大小
-    QString fileSize = QString("%1").arg(info.size(),4,16,QLatin1Char('0'));
-    qDebug() << "选定文件的大小 16进制 : " << fileSize;
+    ui->labelFileSize->setText(QString("%1").arg(binSize,4,16,QLatin1Char('0')));
 
-    ui->labelFileSize->setText(fileSize);
+    // 获取到文件
+    QFile *file = new QFile;
+    // 设置文件信息
+    file->setFileName(fileName);
+    bool ok = file->open(QIODevice::ReadOnly);
+    if (ok) {
+        //
+    } else {
+        //
+    }
+
+    //
+    QDataStream stream(file);
+    char *binByte = new char[binSize];
+    // 文件状态更新
+
+
+    // 读取文件到缓存
+    stream.readRawData(binByte, binSize);
+
+    // 数据格式转换
+    tempByte = new QByteArray(binByte, binSize);
+
+    QString *tempStr = new QString(tempByte->toHex().toUpper());
+
+    // 显示文件内容
+    qint8 cnt = 1;
+    qint16 kcnt = 0;
+    //
+    for(qint64 i = 2; i < tempStr->size ();)
+    {
+        tempStr->insert(i, ' ');//每个字节之间空一格
+        i += 3;
+        cnt++;
+        if(cnt == 8)//每8个字节空2格
+        {
+            tempStr->insert(i, ' ');
+            i += 1;
+        }
+        if(cnt == 16)//每16个字节空一格
+        {
+            cnt = 1;
+            kcnt ++;
+            if(kcnt == 64)//每64行，即1K数据，空一行
+            {
+                kcnt = 0;
+                tempStr->insert(i, '\n');
+                i++;
+            }
+            tempStr->insert(i, '\n');
+            i += 3;         //避免换行后开头一个空格,换行相当于从新插入
+        }
+    }
+
+//    ui->statusBar->showMessage(tr("准备显示"));
+//    ui->fileViewPlainTextEdit->insertPlainText (*tempStr);
+//    ui->statusBar->showMessage(tr("显示完毕"));
+
+    delete tempByte;
+    delete[] binByte;
+    delete tempStr;
+
+    // 文件关闭
+    file->close ();
+    delete file;
 }
 
 //void MainWindow::writeData(const QByteArray &data)
@@ -171,6 +245,8 @@ void MainWindow::readData()
             buf += s;
         }
 
+
+
 //        ui->textBrowser->append(buf);
 
 //        QTextCursor cursor = ui->textBrowser->textCursor();
@@ -179,13 +255,54 @@ void MainWindow::readData()
 
 //        ui->receivebyteLcdNumber->display(ui->receivebyteLcdNumber->value() + temp.size());
 
-
        //ui->statusBar->showMessage(tr("成功读取%1字节数据").arg(temp.size()));
 
-
-
-
-
-
     }
+}
+
+
+void MainWindow::on_sendButton_clicked()
+{
+    // 开始定时器
+    timer->start(500);
+}
+
+
+// 定时器方法
+void MainWindow::timerTransDate()
+{
+    //qDebug("定时器阿");
+    qDebug() << "定时器阿 " << 11;
+
+    qint16 temp = 0;
+    qint16 FileSendEndFg;
+
+    QFile *binFile = new QFile(fileName);
+    binFile->open (QIODevice::ReadOnly);
+    binFile->seek (ulNum * 1024);
+
+    QDataStream in(binFile);
+    //
+    char * binByte = new char[binSize];
+    in.setVersion (QDataStream::Qt_5_9);
+
+    in.readRawData (binByte, binSize);      //读出文件到缓存
+
+        char * binLitByte = new char[64]; //bin缓存
+        static int binfileseek = 0;
+
+        if(binfileseek > binSize)
+        {
+            binfileseek = 0;
+            timer->stop();
+            return;
+        }
+        memcpy (binLitByte, binByte + binfileseek, 64);
+        binfileseek += 64;
+
+        temp = binSize - 1024*ulNum;
+
+        serial->write(binLitByte,64);
+
+        delete binByte;
 }
