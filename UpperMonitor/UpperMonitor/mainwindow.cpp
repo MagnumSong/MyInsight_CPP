@@ -9,6 +9,10 @@
 // 空白字符串
 static const char blankString[] = QT_TRANSLATE_NOOP("SettingsDialog", "N/A");
 
+/*
+发送命令：55 50 46 57 74 A4 00 00 0D 0A
+*/
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -59,48 +63,43 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBox_baudRate->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
     ui->comboBox_baudRate->addItem(QStringLiteral("57600"), QSerialPort::Baud57600);
     ui->comboBox_baudRate->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
-    //设置数据位
+    // 设置数据位
     ui->comboBox_dataBits->addItem(QStringLiteral("5"), QSerialPort::Data5);
     ui->comboBox_dataBits->addItem(QStringLiteral("6"), QSerialPort::Data6);
     ui->comboBox_dataBits->addItem(QStringLiteral("7"), QSerialPort::Data7);
     ui->comboBox_dataBits->addItem(QStringLiteral("8"), QSerialPort::Data8);
     ui->comboBox_dataBits->setCurrentIndex(3);
 
-    //设置奇偶校验位
+    // 设置奇偶校验位
     ui->comboBox_parity->addItem(tr("None"), QSerialPort::NoParity);
     ui->comboBox_parity->addItem(tr("Even"), QSerialPort::EvenParity);
     ui->comboBox_parity->addItem(tr("Odd"), QSerialPort::OddParity);
     ui->comboBox_parity->addItem(tr("Mark"), QSerialPort::MarkParity);
     ui->comboBox_parity->addItem(tr("Space"), QSerialPort::SpaceParity);
 
-    //设置停止位
+    // 设置停止位
     ui->comboBox_stopBit->addItem(QStringLiteral("1"), QSerialPort::OneStop);
     ui->comboBox_stopBit->addItem(QStringLiteral("2"), QSerialPort::TwoStop);
 
-    //添加流控
+    // 添加流控
     ui->comboBox_flowBit->addItem(tr("None"), QSerialPort::NoFlowControl);
     ui->comboBox_flowBit->addItem(tr("RTS/CTS"), QSerialPort::HardwareControl);
     ui->comboBox_flowBit->addItem(tr("XON/XOFF"), QSerialPort::SoftwareControl);
 
-
-    //禁用发送按钮
+    // 禁用发送按钮
     ui->sendButton->setEnabled(false);
     // 发送定时器
     timer = new QTimer(this);
     // 设置槽函数
     connect(timer,SIGNAL(timeout()),this,SLOT(timerTransDate()));
+    // 发送命令 关联信号槽
+    //connect(ui->sendCmdBtn, &QPushButton::clicked, this, &MainWindow::sendCmdButtonClicked);
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-
-// 打开串口
-void MainWindow::openSerialPort()
-{
-
 }
 
 
@@ -130,10 +129,8 @@ void MainWindow::on_openSerialBtn_clicked()
             ui->comboBox_serialPort->setEnabled(false);
             ui->comboBox_stopBit->setEnabled(false);
             //发送按钮打开
-            //ui->btn_send->setEnabled(true);
             ui->sendButton->setEnabled(true);
             //打开串口变成关闭串口
-            //ui->btn_openConsole->setText(tr("关闭串口"));
             ui->openSerialBtn->setText(tr("关闭串口"));
             //
             //信号与槽函数关联
@@ -142,27 +139,21 @@ void MainWindow::on_openSerialBtn_clicked()
 
     } else {
         //关闭串口
-        //serial->clear();
+        serial->clear();
         serial->close();
-        //serial->deleteLater();
+        serial->deleteLater();
 
         //恢复设置功能
         ui->comboBox_baudRate->setEnabled(true);
         ui->comboBox_dataBits->setEnabled(true);
         ui->comboBox_flowBit->setEnabled(true);
-//        ui->comboBox_parity->setEnabled(true);
-//        ui->comboBox_serialPort->setEnabled(true);
-//        ui->comboBox_stopBit->setEnabled(true);
+        ui->comboBox_parity->setEnabled(true);
+        ui->comboBox_serialPort->setEnabled(true);
+        ui->comboBox_stopBit->setEnabled(true);
 
-//        ui->btn_openConsole->setText(tr("打开串口"));
-//        ui->btn_send->setEnabled(false);
+        ui->openSerialBtn->setText(tr("打开串口"));
+        ui->sendButton->setEnabled(false);
     }
-}
-
-// 发送命令按钮的方法
-void MainWindow::sendCmdButtonClicked()
-{
-
 }
 
 
@@ -203,7 +194,6 @@ void MainWindow::on_openFileBtn_clicked()
     char *binByte = new char[binSize];
     // 文件状态更新
 
-
     // 读取文件到缓存
     stream.readRawData(binByte, binSize);
 
@@ -242,7 +232,7 @@ void MainWindow::on_openFileBtn_clicked()
     }
 
     ui->statusBar->showMessage(tr("准备显示"));
-//    ui->fileViewPlainTextEdit->insertPlainText (*tempStr);
+    //ui->fileViewPlainTextEdit->insertPlainText (*tempStr);
     ui->statusBar->showMessage(tr("显示完毕"));
 
     delete tempByte;
@@ -254,17 +244,15 @@ void MainWindow::on_openFileBtn_clicked()
     delete file;
 }
 
-//void MainWindow::writeData(const QByteArray &data)
-//{
-//    serial->write(data);
-//}
-
 
 // Read Data
 void MainWindow::readData()
 {
     QByteArray temp = serial->readAll();
     QString buf;
+
+    qDebug() << "readData: " << temp;
+
 
     if (!temp.isEmpty()) {
         // 读取信息不为空
@@ -282,8 +270,6 @@ void MainWindow::readData()
         QTextCursor cursor = ui->textBrowser->textCursor();
         cursor.movePosition(QTextCursor::End);
         ui->textBrowser->setTextCursor(cursor);
-
-        //ui->receivebyteLcdNumber->display(ui->receivebyteLcdNumber->value() + temp.size());
         // 接收到数据的大小
         ui->statusBar->showMessage(tr("成功读取%1字节数据").arg(temp.size()));
     }
@@ -292,8 +278,19 @@ void MainWindow::readData()
 
 void MainWindow::on_sendButton_clicked()
 {
+    // 先发送命令给串口
+    //serial->write(ui->textEdit_send->toPlainText().toLatin1());
+
+    // 55 50 46 57 74 A4 00 00 0D 0A
+    QString cmdStr = "55 50 46 57 74 A4 00 00 0D 0A";
+
+    serial->write("cmdStr");
+
     // 开始定时器
-    timer->start(500);
+    //timer->start(500);
+
+
+
 }
 
 

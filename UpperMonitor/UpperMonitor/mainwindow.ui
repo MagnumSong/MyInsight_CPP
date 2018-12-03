@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="sendButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>460</y>
       <width>75</width>
       <height>23</height>
@@ -248,29 +248,6 @@
     </property>
     <property name="text">
      <string>清空接收内容</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="sendCmdText">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>220</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="sendCmdBtn">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>220</y>
-      <width>51</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>发送</string>
     </property>
    </widget>
   </widget>

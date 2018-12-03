@@ -27,7 +27,7 @@ public:
 
 private slots:
     // 打开串口
-    void openSerialPort();
+    //void openSerialPort();
 
 
     // 信号槽
@@ -41,7 +41,7 @@ private slots:
 
     void on_sendButton_clicked();
     //发送命令button方法
-    void sendCmdButtonClicked();
+   // void sendCmdButtonClicked();
 
 private:
     Ui::MainWindow *ui;
