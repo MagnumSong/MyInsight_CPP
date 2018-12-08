@@ -38,10 +38,8 @@ private slots:
     void readData();
 
     void timerTransDate();
-
-    void on_sendButton_clicked();
-    //发送命令button方法
-   // void sendCmdButtonClicked();
+    //
+    void clearTextBtnClicked();
 
 private:
     Ui::MainWindow *ui;

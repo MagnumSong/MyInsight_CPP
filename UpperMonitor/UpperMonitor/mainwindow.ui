@@ -14,24 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="sendButton">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>460</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>发送</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="openSerialBtn">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>420</y>
+      <x>30</x>
+      <y>220</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -53,8 +40,8 @@
    <widget class="QPushButton" name="openFileBtn">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>460</y>
+      <x>30</x>
+      <y>270</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -76,9 +63,9 @@
    <widget class="QLineEdit" name="txtSendFile">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>470</y>
-      <width>181</width>
+      <x>10</x>
+      <y>300</y>
+      <width>161</width>
       <height>20</height>
      </rect>
     </property>
@@ -96,8 +83,8 @@
    <widget class="QLabel" name="labelFileSize">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>470</y>
+      <x>20</x>
+      <y>340</y>
       <width>54</width>
       <height>12</height>
      </rect>
@@ -109,8 +96,8 @@
    <widget class="QLabel" name="receivebyteLcdNumber">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>470</y>
+      <x>100</x>
+      <y>340</y>
       <width>54</width>
       <height>12</height>
      </rect>
@@ -237,7 +224,7 @@
      <string>流控制:</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="clearTextBtn">
     <property name="geometry">
      <rect>
       <x>640</x>

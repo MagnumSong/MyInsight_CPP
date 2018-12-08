@@ -5,6 +5,7 @@
 //定时器
 #include <QTimer>
 #include <QDir>
+#include <QString>
 
 // 空白字符串
 static const char blankString[] = QT_TRANSLATE_NOOP("SettingsDialog", "N/A");
@@ -52,9 +53,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
         ui->comboBox_serialPort->addItem(list.first(), list);
     }
+    ui->comboBox_serialPort->setCurrentIndex(1);
 
     // 设置波特率
-    ui->comboBox_baudRate->addItem(tr("波特率"));
     ui->comboBox_baudRate->addItem(QStringLiteral("1200"), QSerialPort::Baud1200);
     ui->comboBox_baudRate->addItem(QStringLiteral("2400"), QSerialPort::Baud2400);
     ui->comboBox_baudRate->addItem(QStringLiteral("4800"), QSerialPort::Baud4800);
@@ -63,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBox_baudRate->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
     ui->comboBox_baudRate->addItem(QStringLiteral("57600"), QSerialPort::Baud57600);
     ui->comboBox_baudRate->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
+    ui->comboBox_baudRate->setCurrentIndex(7);
     // 设置数据位
     ui->comboBox_dataBits->addItem(QStringLiteral("5"), QSerialPort::Data5);
     ui->comboBox_dataBits->addItem(QStringLiteral("6"), QSerialPort::Data6);
@@ -86,14 +88,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBox_flowBit->addItem(tr("RTS/CTS"), QSerialPort::HardwareControl);
     ui->comboBox_flowBit->addItem(tr("XON/XOFF"), QSerialPort::SoftwareControl);
 
-    // 禁用发送按钮
-    ui->sendButton->setEnabled(false);
-    // 发送定时器
+    // 定时器
     timer = new QTimer(this);
     // 设置槽函数
     connect(timer,SIGNAL(timeout()),this,SLOT(timerTransDate()));
-    // 发送命令 关联信号槽
-    //connect(ui->sendCmdBtn, &QPushButton::clicked, this, &MainWindow::sendCmdButtonClicked);
+    //
+    connect(ui->clearTextBtn,&QPushButton::clicked,this,&MainWindow::clearTextBtnClicked);
 
 }
 
@@ -106,7 +106,6 @@ MainWindow::~MainWindow()
 void MainWindow::on_openSerialBtn_clicked()
 {
     if (ui->openSerialBtn->text() == tr("打开串口")) {
-
         //设置串口名字
         serial->setPortName(ui->comboBox_serialPort->currentText());
         //设置波特率
@@ -128,8 +127,7 @@ void MainWindow::on_openSerialBtn_clicked()
             ui->comboBox_parity->setEnabled(false);
             ui->comboBox_serialPort->setEnabled(false);
             ui->comboBox_stopBit->setEnabled(false);
-            //发送按钮打开
-            ui->sendButton->setEnabled(true);
+
             //打开串口变成关闭串口
             ui->openSerialBtn->setText(tr("关闭串口"));
             //
@@ -152,7 +150,8 @@ void MainWindow::on_openSerialBtn_clicked()
         ui->comboBox_stopBit->setEnabled(true);
 
         ui->openSerialBtn->setText(tr("打开串口"));
-        ui->sendButton->setEnabled(false);
+        //定时器停止
+        timer->stop();
     }
 }
 
@@ -192,7 +191,6 @@ void MainWindow::on_openFileBtn_clicked()
     //
     QDataStream stream(file);
     char *binByte = new char[binSize];
-    // 文件状态更新
 
     // 读取文件到缓存
     stream.readRawData(binByte, binSize);
@@ -245,27 +243,47 @@ void MainWindow::on_openFileBtn_clicked()
 }
 
 
-// Read Data
+// Read Data 读到串口数据
 void MainWindow::readData()
 {
+    // 检测文件是否为空
+    if (fileName.isEmpty()) {
+        // 检测到文件名为空时 停止下面的命令
+        qDebug() << "readData: " << "发送文件为空";
+        ui->textBrowser->append("发送文件为空");
+        return;
+    }
+
+    // 读取串口数据
     QByteArray temp = serial->readAll();
     QString buf;
 
     qDebug() << "readData: " << temp;
 
-
+    // 当串口数据不为空时
     if (!temp.isEmpty()) {
-        // 读取信息不为空
-        ui->textBrowser->setTextColor(Qt::black);
 
-        for(int i = 0; i < temp.count(); i++) {
-            QString s;
-            s.sprintf("%02X ", (unsigned char)temp.at(i));
-            buf += s;
+        QString tempStr = temp;
+        if (tempStr.contains("Wait for Online Updata:1.....", Qt::CaseSensitive)) {
+            //判断字符串是否包含 Wait for Online Updata:   // CaseSensitive
+
+            // 发送串口命令
+            qDebug() << "readData 准备发送命令: " << "55 50 46 57 74 A4 00 00 0D 0A";
+            serial->write("55 50 46 57 74 A4 00 00 0D 0A");
         }
 
-        // 文本显示
-        ui->textBrowser->append(buf);
+        if (tempStr.contains("Bey-Bey Bootloader, Jump to App !!! ", Qt::CaseSensitive)) {
+            // 检测字符串 发送文件 Bey-Bey Bootloader, Jump to App !!!
+
+            qDebug() << "readData: " << "准备发送文件";
+            ui->textBrowser->append("准备发送文件");
+            // 定时器开启方法
+            timer->start(50);
+        }
+        // 设置文本颜色
+        ui->textBrowser->setTextColor(Qt::black);
+        // 显示字符串 拼接
+        ui->textBrowser->append(temp);
 
         QTextCursor cursor = ui->textBrowser->textCursor();
         cursor.movePosition(QTextCursor::End);
@@ -275,26 +293,7 @@ void MainWindow::readData()
     }
 }
 
-
-void MainWindow::on_sendButton_clicked()
-{
-    // 先发送命令给串口
-    //serial->write(ui->textEdit_send->toPlainText().toLatin1());
-
-    // 55 50 46 57 74 A4 00 00 0D 0A
-    QString cmdStr = "55 50 46 57 74 A4 00 00 0D 0A";
-
-    serial->write("cmdStr");
-
-    // 开始定时器
-    //timer->start(500);
-
-
-
-}
-
-
-// 定时器方法
+// 定时器方法 定时器转换数据
 void MainWindow::timerTransDate()
 {
     //qDebug("定时器阿");
@@ -313,22 +312,31 @@ void MainWindow::timerTransDate()
     in.setVersion (QDataStream::Qt_5_9);
 
     in.readRawData (binByte, binSize);      //读出文件到缓存
-
-    char * binLitByte = new char[64]; //bin缓存
+    // 设置每次发送的大小
+    char * binLitByte = new char[256]; //bin缓存
     static int binfileseek = 0;
 
     if(binfileseek > binSize)
     {
         binfileseek = 0;
         timer->stop();
+
         return;
     }
-    memcpy (binLitByte, binByte + binfileseek, 64);
-    binfileseek += 64;
+
+    memcpy (binLitByte, binByte + binfileseek, 256);
+    binfileseek += 256;
 
     temp = binSize - 1024*ulNum;
 
-    serial->write(binLitByte,64);
+    qDebug() << "写入文件: " << binLitByte;
+    // 写入串口
+    serial->write(binLitByte, 256);
 
     delete binByte;
+}
+
+void MainWindow::clearTextBtnClicked()
+{
+    ui->textBrowser->setText(NULL);
 }
