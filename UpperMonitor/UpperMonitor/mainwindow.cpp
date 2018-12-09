@@ -9,6 +9,10 @@
 
 // 空白字符串
 static const char blankString[] = QT_TRANSLATE_NOOP("SettingsDialog", "N/A");
+// 默认发送字节大小
+static const int sendByteSize = 1024;
+// 延时毫秒数
+static const int delayTimeMS = 50;
 
 /*
 发送命令：55 50 46 57 74 A4 00 00 0D 0A
@@ -167,71 +171,53 @@ void MainWindow::on_openFileBtn_clicked()
     ui->txtSendFile->setText(fileName);
     // 读取文件大小
     QFileInfo *fileInfo = new QFileInfo(fileName);
-    //int fileSize = fileInfo->size(); // qint64
     // bin文件大小qint64转int类型
     binSize = QStringLiteral("%1").arg(fileInfo->size()).toInt();
 
     qDebug() << "选定文件的大小 : " << binSize;
     // 文件大小换算成16进制
     qDebug() << "选定文件的大小 16进制 : " << QString("%1").arg(binSize,4,16,QLatin1Char('0'));
-
-    ui->labelFileSize->setText(QString("%1").arg(binSize,4,16,QLatin1Char('0')));
+    // 文件大小显示
+    ui->labelFileSize->setText("文件大小:" + QString::number(binSize));
 
     // 获取到文件
     QFile *file = new QFile;
     // 设置文件信息
     file->setFileName(fileName);
-    bool ok = file->open(QIODevice::ReadOnly);
-    if (ok) {
-        //
+
+    if (!file->open(QIODevice::ReadWrite)) {
+        // 打开文件失败
+        return;
     } else {
-        //
+        qDebug() << "打开二进制文件 : " << "打开文件成功";
     }
 
-    //
     QDataStream stream(file);
     char *binByte = new char[binSize];
 
     // 读取文件到缓存
     stream.readRawData(binByte, binSize);
-
     // 数据格式转换
     tempByte = new QByteArray(binByte, binSize);
 
     QString *tempStr = new QString(tempByte->toHex().toUpper());
 
     // 显示文件内容
-    qint8 cnt = 1;
-    qint16 kcnt = 0;
+//    qint8 cnt = 1;
+//    qint16 kcnt = 0;
     //
-    for(qint64 i = 2; i < tempStr->size ();)
-    {
-        tempStr->insert(i, ' ');//每个字节之间空一格
-        i += 3;
-        cnt++;
-        if(cnt == 8)//每8个字节空2格
-        {
-            tempStr->insert(i, ' ');
-            i += 1;
-        }
-        if(cnt == 16)//每16个字节空一格
-        {
-            cnt = 1;
-            kcnt ++;
-            if(kcnt == 64)//每64行，即1K数据，空一行
-            {
-                kcnt = 0;
-                tempStr->insert(i, '\n');
-                i++;
-            }
-            tempStr->insert(i, '\n');
-            i += 3;         //避免换行后开头一个空格,换行相当于从新插入
-        }
-    }
+//    for(qint64 i = 2; i < tempStr->size ();)
+//    {
+//        tempStr->insert(i, ' ');//每个字节之间空一格
+//        i += 3;
+//        cnt++;
+//    }
 
     ui->statusBar->showMessage(tr("准备显示"));
-    //ui->fileViewPlainTextEdit->insertPlainText (*tempStr);
+    //ui->textSendBrowser->insertPlainText (*tempStr);
     ui->statusBar->showMessage(tr("显示完毕"));
+
+    //qDebug() << "打开二进制文件 内容 : " << *tempStr;
 
     delete tempByte;
     delete[] binByte;
@@ -260,78 +246,106 @@ void MainWindow::readData()
 
     qDebug() << "readData: " << temp;
 
-    // 当串口数据不为空时
-    if (!temp.isEmpty()) {
-
-        QString tempStr = temp;
-        if (tempStr.contains("Wait for Online Updata:1.....", Qt::CaseSensitive)) {
-            //判断字符串是否包含 Wait for Online Updata:   // CaseSensitive
-
-            // 发送串口命令
-            qDebug() << "readData 准备发送命令: " << "55 50 46 57 74 A4 00 00 0D 0A";
-            serial->write("55 50 46 57 74 A4 00 00 0D 0A");
-        }
-
-        if (tempStr.contains("Bey-Bey Bootloader, Jump to App !!! ", Qt::CaseSensitive)) {
-            // 检测字符串 发送文件 Bey-Bey Bootloader, Jump to App !!!
-
-            qDebug() << "readData: " << "准备发送文件";
-            ui->textBrowser->append("准备发送文件");
-            // 定时器开启方法
-            timer->start(50);
-        }
-        // 设置文本颜色
-        ui->textBrowser->setTextColor(Qt::black);
-        // 显示字符串 拼接
-        ui->textBrowser->append(temp);
-
-        QTextCursor cursor = ui->textBrowser->textCursor();
-        cursor.movePosition(QTextCursor::End);
-        ui->textBrowser->setTextCursor(cursor);
-        // 接收到数据的大小
-        ui->statusBar->showMessage(tr("成功读取%1字节数据").arg(temp.size()));
+    if (temp.isEmpty()) {
+        // 当串口数据为空时
+        qDebug() << "readData: " << "当串口数据为空";
+        return;
     }
+
+    QString tempStr = temp;
+    if (tempStr.contains("Wait for Online Updata:4.....", Qt::CaseSensitive)) {
+        // 发送串口命令  A474 -> 74A4
+        qDebug() << "readData 准备发送命令: " << "55 50 46 57 74 A4 00 00 0D 0A";
+        // 文件大小转十六进制
+        QString fileSize = QString::number(binSize, 16).toUpper();
+        QByteArray fileSizeArray = fileSize.toLatin1(); //.toHex();
+        //
+        //qDebug() << "readData 准备发送命令 大小端: " << qFromLittleEndian(binSize->toHex());
+        QString charOne = QString("55504657") + fileSize +QString("00000D0A");
+
+
+        qDebug() << "readData 准备发送命令: " << charOne.toLatin1().data();
+
+        qint8 cnt = 1;
+        qint16 kcnt = 0;
+
+        QString tempFileSize;
+
+        for(qint64 i = 2; i < fileSize.size();)
+        {
+            //tempStr->insert(i, ' ');//每个字节之间空一格
+            qDebug() << "readData 准备发送命令: " << charOne.toLatin1().data();
+            i += 3;
+            cnt++;
+        }
+
+
+        //char *charOne = "55 50 46 57". //fileSizeArray.data();
+
+        //serial->write("55 50 46 57" + fileSizeArray.data() + "00 00 0D 0A");
+        serial->write("5550465774A400000D0A");
+    }
+
+    if (tempStr.contains("Bey-Bey Bootloader, Jump to App !!! ", Qt::CaseSensitive)) {
+        // 发送文件
+        qDebug() << "readData: " << "准备发送文件";
+        ui->textBrowser->append("准备发送文件");
+        // 定时器开启方法 延时毫秒数
+        timer->start(delayTimeMS); //
+    }
+    // 设置文本颜色
+    ui->textBrowser->setTextColor(Qt::black);
+    // 显示字符串 拼接
+    ui->textBrowser->append(temp);
+
+    QTextCursor cursor = ui->textBrowser->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    ui->textBrowser->setTextCursor(cursor);
+    // 接收到数据的大小
+    ui->statusBar->showMessage(tr("成功读取%1字节数据").arg(temp.size()));
 }
 
 // 定时器方法 定时器转换数据
 void MainWindow::timerTransDate()
 {
-    //qDebug("定时器阿");
-    qDebug() << "定时器阿 " << 11;
-
     qint16 temp = 0;
-    qint16 FileSendEndFg;
-
+    // 文件名
     QFile *binFile = new QFile(fileName);
+
     binFile->open (QIODevice::ReadOnly);
     binFile->seek (ulNum * 1024);
 
-    QDataStream in(binFile);
-    //
+    //初始化
+    QDataStream stream(binFile);
     char * binByte = new char[binSize];
-    in.setVersion (QDataStream::Qt_5_9);
+    //stream.setVersion (QDataStream::Qt_5_9);
 
-    in.readRawData (binByte, binSize);      //读出文件到缓存
+    stream.readRawData (binByte, binSize);      //读出文件到缓存
     // 设置每次发送的大小
-    char * binLitByte = new char[256]; //bin缓存
+    char * binLitByte = new char[sendByteSize]; //bin缓存
     static int binfileseek = 0;
 
     if(binfileseek > binSize)
     {
+
+        qDebug() << "File Size: " << binfileseek;
         binfileseek = 0;
         timer->stop();
-
         return;
+    } else {
+        qDebug() << "File Size: " << binfileseek;
+
     }
 
-    memcpy (binLitByte, binByte + binfileseek, 256);
-    binfileseek += 256;
+    memcpy (binLitByte, binByte + binfileseek, sendByteSize);
+
+    binfileseek += sendByteSize;
 
     temp = binSize - 1024*ulNum;
 
-    qDebug() << "写入文件: " << binLitByte;
     // 写入串口
-    serial->write(binLitByte, 256);
+    serial->write(binLitByte, sendByteSize);
+    qDebug() << "写入文件长度: " << binByte + binfileseek;
 
     delete binByte;
 }
